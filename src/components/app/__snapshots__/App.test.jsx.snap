@@ -2,14 +2,19 @@
 
 exports[`App component renders App 1`] = `
 <DocumentFragment>
-  <button>
+  <button
+    id="UNDO"
+  >
     undo
   </button>
-  <button>
+  <button
+    id="REDO"
+  >
     redo
   </button>
   <input
     alt="Color Picker"
+    id="RECORD"
     type="color"
     value="#FF0000"
   />
