@@ -1,44 +1,42 @@
-import React, { useState } from 'react';
-
-const useRecord = (init) => {
-  const [before, setBefore] = useState([]);
-  const [current, setCurrent] = useState(init);
-  const [after, setAfter] = useState([]);
-
-  const undo = () => {
-    setAfter(after => [current, ...after]);
-    setCurrent(before[before.length - 1]);
-    setBefore(before => before.slice(0, -1));
-  };
-
-  const redo = () => {
-    setBefore(before => [...before, current]);
-    setCurrent(after[0]);
-    setAfter(after => after.slice(1));
-  };
-
-  const record = val => {
-    setBefore(before => [...before, current]);
-    setCurrent(val);
-  };
-
-  return {
-    undo,
-    record,
-    redo,
-    current,
-  };
-};
+import React, { useReducer, useState } from 'react';
+import reducer, { initialState } from '../../reducers/colorReducer';
 
 function App() {
-  const { current, undo, redo, record } = useRecord('#FF0000');
+  const [state, dispatch] = useReducer(reducer, initialState)
+
+  const handleChange = ({ target }) => {
+    dispatch({
+      type: target.id,
+      payload: target.value
+    });
+  };
+
+  const handleClick = ({ target }) => {
+    dispatch({
+      type: target.id
+    });
+  };
 
   return (
     <>
-      <button onClick={undo}>undo</button>
-      <button onClick={redo}>redo</button>
-      <input type="color" alt="Color Picker" value={current} onChange={({ target }) => record(target.value)} />
-      <div data-testid="Color Result" style={{ backgroundColor: current, width: '10rem', height: '10rem' }}></div>
+      <button id="UNDO" onClick={handleClick}>undo</button>
+      <button id="REDO" onClick={handleClick}>redo</button>
+      <input 
+        id="RECORD"
+        type="color" 
+        alt="Color Picker" 
+        value={state.current} 
+        onChange={handleChange} 
+      />
+      <div 
+        data-testid="Color Result" 
+        style=
+          {{ 
+            backgroundColor: state.current, 
+            width: '10rem', 
+            height: '10rem' 
+          }}>  
+      </div>
     </>
   );
 }
